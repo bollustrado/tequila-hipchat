@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/hipchat-project.iml" filepath="$PROJECT_DIR$/.idea/hipchat-project.iml" />
+      <module fileurl="file://$USER_HOME$/github/keyring/.idea/keyring.iml" filepath="$USER_HOME$/github/keyring/.idea/keyring.iml" />
+    </modules>
+  </component>
+</project>

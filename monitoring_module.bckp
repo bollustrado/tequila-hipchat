@@ -1,0 +1,61 @@
+import psycopg2
+#CORE+ HC+ NIC+ 
+
+#Active services
+#kds=> \d services_problems;
+#              Table "public.services_problems"
+#    Column    |            Type             |   Modifiers   
+#--------------+-----------------------------+---------------
+# host         | text                        | not null
+# service      | text                        | not null
+# status       | text                        | 
+# duration     | bigint                      | 
+# last_check   | text                        | 
+# attempt      | text                        | 
+# status_info  | text                        | 
+# ctime        | timestamp without time zone | default now()
+# mtime        | timestamp without time zone | default now()
+# has_comments | boolean                     | default false
+# sd           | boolean                     | default false
+# ack          | boolean                     | default false
+# fresh        | boolean                     | default true
+#kds=> \d hosts;
+#                      Table "public.hosts"
+#      Column      |            Type             |   Modifiers   
+#------------------+-----------------------------+---------------
+# name             | text                        | not null
+# extra_notes_orig | text                        | 
+# extra_notes      | text                        | 
+# resp_uids        | text                        | 
+# watch_time       | integer                     | 
+# mby              | text                        | 
+# ctime            | timestamp without time zone | default now()
+# mtime            | timestamp without time zone | default now()
+# internal_notes   | text                        | 
+# important        | integer                     | default 0
+# tmp_nic          | integer                     | default 0
+# tmp_project      | text                        | 
+
+#
+#select hosts from hosts where resp_uids='akariakin, akubanov, sgorelov, ekrasilnikov, akonyaev, ddubrovin';
+
+list_project_host={"GETLIST":"select host,service,status_info from services_problems",
+				   "CORE":"select * from hosts where resp_uids ~'ddubrovin'",
+				   "NIC":"select * from hosts where resp_uids~'obravo'",
+				   "HC":"select * from hosts where resp_uids~'szapuskalov'"}
+
+conn= psycopg2.connect("user='kds' host='devel.kds.corp.hostcomm.ru' port='8888' password='0000ABCDFF'")
+curs= conn.cursor()
+#curs.execute("""select host,service,status_info from services_problems""")
+curs.execute(list_project_host['GETLIST'])
+allproblems=curs.fetchall()
+
+for key, value in list_project_host.items():
+		conn= psycopg2.connect("user='kds' host='devel.kds.corp.hostcomm.ru' port='8888' password='0000ABCDFF'")
+		curs= conn.cursor()
+		curs.execute(value)
+		owner_and_hos=curs.fetchall()
+		for prob in allproblems:
+			for host in owner_and_hos:
+				if host[0]==prob[0]:
+						print key+" "+ prob[0]+"-"+prob[1]+"-"+prob[2]
